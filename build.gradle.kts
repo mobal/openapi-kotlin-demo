@@ -41,6 +41,8 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-ui:1.2.33")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("com.h2database:h2")
+    testImplementation("com.ninja-squad:springmockk:2.0.0")
+    testImplementation("io.mockk:mockk:1.9.3")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
