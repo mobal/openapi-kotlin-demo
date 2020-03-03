@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest
 import javax.validation.Valid
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -28,11 +29,8 @@ class ProductController(
 
     @PostMapping(value = [""])
     fun create(@RequestBody @Valid productDto: ProductDto, @Autowired request: HttpServletRequest):
-            ResponseEntity<Unit> {
-        val product = productService.save(productDto)
-        return ResponseEntity.noContent()
-            .header("Location", "${request.requestURI}/${product.id}")
-            .build()
+            ResponseEntity<ProductEntity> {
+        return ResponseEntity(productService.save(productDto), HttpStatus.CREATED)
     }
 
     @GetMapping(value = [""])
