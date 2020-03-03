@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS `products`(
+    `id` DOUBLE AUTO_INCREMENT,
+    `name` VARCHAR(255) NOT NULL UNIQUE,
+    `description` VARCHAR(255) NOT NULL,
+    `price` DECIMAL NOT NULL UNIQUE,
+    PRIMARY KEY(`id`)
+);

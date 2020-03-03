@@ -1,0 +1,24 @@
+logging:
+  level:
+    ROOT: INFO
+    hibernate: INFO
+    springframework:
+      web: INFO
+server:
+  port: 8080
+spring:
+  datasource:
+    driverClassName: org.h2.Driver
+    password:
+    url: jdbc:h2:mem:products
+    username: ha
+  h2:
+    console:
+      enabled: true
+  hibernate:
+    ddl-auto: validate
+  jpa:
+    datasource-platform: org.hibernate.dialect.H2Dialect
+  output:
+    ansi:
+      enabled: ALWAYS
