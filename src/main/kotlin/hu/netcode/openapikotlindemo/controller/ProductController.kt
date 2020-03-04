@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping(
+    consumes = [MediaType.APPLICATION_JSON_VALUE],
     produces = [MediaType.APPLICATION_JSON_VALUE],
     value = ["/api/v1/products"]
 )
@@ -34,12 +35,12 @@ class ProductController(
     }
 
     @GetMapping(value = [""])
-    fun findAll(): List<ProductEntity> {
-        return productService.findAll()
+    fun findAll(): ResponseEntity<List<ProductEntity>> {
+        return ResponseEntity(productService.findAll(), HttpStatus.OK)
     }
 
     @GetMapping(value = ["/{productId}"])
-    fun findById(@PathVariable productId: Long): ProductEntity {
-        return productService.findById(productId)
+    fun findById(@PathVariable productId: Long): ResponseEntity<ProductEntity> {
+        return ResponseEntity(productService.findById(productId), HttpStatus.OK)
     }
 }
