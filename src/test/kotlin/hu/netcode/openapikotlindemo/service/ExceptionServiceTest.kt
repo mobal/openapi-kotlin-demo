@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.test.context.junit.jupiter.SpringExtension
 
 @ExtendWith(SpringExtension::class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestInstance(value = TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
 class ExceptionServiceTest {
     @Autowired
@@ -22,7 +22,7 @@ class ExceptionServiceTest {
 
     @DisplayName(value = "Tests for function createExceptionResponseEntity")
     @Nested
-    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+    @TestInstance(value = TestInstance.Lifecycle.PER_CLASS)
     inner class CreateExceptionResponseEntity() {
         @Test
         fun `successfully create ResponseEntity`() {

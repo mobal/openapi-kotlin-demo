@@ -22,8 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit.jupiter.SpringExtension
 
-@ExtendWith(SpringExtension::class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@ExtendWith(value = [SpringExtension::class])
+@TestInstance(value = TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
 class ProductServiceTest {
     private companion object {
@@ -47,7 +47,7 @@ class ProductServiceTest {
 
     @DisplayName(value = "Tests for function findAll")
     @Nested
-    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+    @TestInstance(value = TestInstance.Lifecycle.PER_CLASS)
     inner class FindAll {
         @Test
         fun `successfully find all products`() {
@@ -72,7 +72,7 @@ class ProductServiceTest {
 
     @DisplayName(value = "Tests for function findById")
     @Nested
-    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+    @TestInstance(value = TestInstance.Lifecycle.PER_CLASS)
     inner class FindById {
         @Test
         fun `successfully find product by id`() {
@@ -97,7 +97,7 @@ class ProductServiceTest {
 
     @DisplayName(value = "Tests for function save")
     @Nested
-    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+    @TestInstance(value = TestInstance.Lifecycle.PER_CLASS)
     inner class Save {
         @Test
         fun `successfully save new product`() {
