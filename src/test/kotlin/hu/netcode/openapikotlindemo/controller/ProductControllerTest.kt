@@ -64,7 +64,6 @@ class ProductControllerTest {
                 .content(objectMapper.writeValueAsString(dto))
                 .contentType(MediaType.APPLICATION_JSON)
         )
-            // .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(MockMvcResultMatchers.status().`is`(httpStatus.value()))
     }
 
