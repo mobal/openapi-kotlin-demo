@@ -8,6 +8,7 @@ import hu.netcode.openapikotlindemo.service.ProductService
 import io.mockk.clearAllMocks
 import io.mockk.every
 import javax.persistence.EntityExistsException
+import javax.persistence.EntityNotFoundException
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -23,6 +24,7 @@ import org.springframework.http.MediaType
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.context.web.WebAppConfiguration
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
@@ -35,6 +37,7 @@ class ProductControllerTest {
     private companion object {
         const val HAMMER = "Hammer"
         const val PRICE = 100L
+        const val URL = "/api/v1/products"
     }
 
     @Autowired
@@ -52,33 +55,29 @@ class ProductControllerTest {
         clearAllMocks()
     }
 
-    private fun validateResult(
-        dto: ProductDto,
-        httpMethod: HttpMethod,
-        httpStatus: HttpStatus,
-        url: String
-    ) {
-        mockMvc.perform(
-            MockMvcRequestBuilders.request(httpMethod, url)
-                .accept(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dto))
-                .contentType(MediaType.APPLICATION_JSON)
-        )
-            .andExpect(MockMvcResultMatchers.status().`is`(httpStatus.value()))
-    }
-
     @DisplayName(value = "Test for function create")
     @Nested
     @TestInstance(value = TestInstance.Lifecycle.PER_CLASS)
     inner class Create {
-        private val url = "/api/v1/products"
+        private fun validate(
+            dto: ProductDto,
+            httpStatus: HttpStatus
+        ) {
+            mockMvc.perform(
+                    MockMvcRequestBuilders.request(HttpMethod.POST, URL)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto))
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(MockMvcResultMatchers.status().`is`(httpStatus.value()))
+        }
 
         @Test
         fun `successfully create product`() {
             every {
                 productService.save(any())
             } returns productEntity
-            validateResult(productDto, HttpMethod.POST, HttpStatus.CREATED, url)
+            validate(productDto, HttpStatus.CREATED)
         }
 
         @Test
@@ -86,12 +85,63 @@ class ProductControllerTest {
             every {
                 productService.save(any())
             } throws EntityExistsException()
-            validateResult(productDto, HttpMethod.POST, HttpStatus.BAD_REQUEST, url)
+            validate(productDto, HttpStatus.BAD_REQUEST)
         }
 
         @Test
         fun `fail to create product because validation fails`() {
-            validateResult(ProductDto("", "", 0L), HttpMethod.POST, HttpStatus.BAD_REQUEST, url)
+            validate(ProductDto("", "", 0L), HttpStatus.BAD_REQUEST)
+        }
+    }
+
+    @DisplayName(value = "Test for function findAll")
+    @Nested
+    @TestInstance(value = TestInstance.Lifecycle.PER_CLASS)
+    inner class FindAll {
+        @Test
+        fun `successfully find all products`() {
+            every {
+                productService.findAll()
+            } returns listOf(productEntity)
+            mockMvc.get(URL) {
+                contentType = MediaType.APPLICATION_JSON
+            }.andExpect {
+                content { json(objectMapper.writeValueAsString(listOf(productEntity))) }
+                content { contentType(MediaType.APPLICATION_JSON) }
+                status { isOk }
+            }
+        }
+    }
+
+    @DisplayName(value = "Test for function findById")
+    @Nested
+    @TestInstance(value = TestInstance.Lifecycle.PER_CLASS)
+    inner class FindById {
+        @Test
+        fun `successfully find product by id`() {
+            every {
+                productService.findById(any())
+            } returns productEntity
+            mockMvc.get("$URL/1") {
+                contentType = MediaType.APPLICATION_JSON
+            }.andExpect {
+                content { json(objectMapper.writeValueAsString(productEntity)) }
+                content { contentType(MediaType.APPLICATION_JSON) }
+                status { isOk }
+            }
+        }
+
+        @Test
+        fun `fail to find product by id`() {
+            every {
+                productService.findById(any())
+            } throws EntityNotFoundException()
+            mockMvc.get("$URL/1") {
+                contentType = MediaType.APPLICATION_JSON
+            }.andExpect {
+                content { contentType(MediaType.APPLICATION_JSON) }
+                status { isNotFound }
+            }
         }
     }
 }

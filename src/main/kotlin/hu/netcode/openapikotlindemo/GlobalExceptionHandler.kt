@@ -26,13 +26,6 @@ class GlobalExceptionHandler(
     }
 
     @ExceptionHandler(value = [
-        Exception::class
-    ])
-    fun handleInternalServerErrorExceptions(ex: Exception): ResponseEntity<Map<String, Any>> {
-        return exceptionService.createExceptionResponseEntity(ex.toString(), HttpStatus.INTERNAL_SERVER_ERROR)
-    }
-
-    @ExceptionHandler(value = [
         EntityNotFoundException::class
     ])
     fun handleNotFoundExceptions(ex: Exception): ResponseEntity<Map<String, Any>> {
